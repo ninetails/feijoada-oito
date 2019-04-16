@@ -15,7 +15,8 @@
     "@commitlint/config-lerna-scopes": "^7.5.1",
     "cross-env": "^5.2.0",
     "husky": "^1.3.1",
-    "lerna": "^3.13.2"
+    "lerna": "^3.13.2",
+    "npm-run-all": "^4.1.5"
   },
   "husky": {
     "hooks": {
@@ -27,10 +28,21 @@
   "scripts": {
     "clean": "lerna clean --yes 2>/dev/null || :",
     "co": "npx git-cz",
+    "git:flow": "command -v git-flow >/dev/null 2>&1 && [[ -z \"$(git config --get-regexp gitflow.prefix)\" ]] && NPM_EXECPATH=$npm_execpath npm-run-all git:flow:init git:flow:config || :",
+    "git:flow:init": "git flow init -fd",
+    "git:flow:config": "NPM_EXECPATH=$npm_execpath npm-run-all git:flow:config:*",
+    "git:flow:config:hotfix": "git config gitflow.prefix.hotfix 'fix/'",
+    "git:flow:config:feature": "git config gitflow.prefix.feature 'feature/'",
+    "git:flow:config:release": "git config gitflow.prefix.release 'release/'",
+    "git:flow:config:bugfix": "git config gitflow.prefix.bugfix 'bugfix/'",
+    "git:flow:config:support": "git config gitflow.prefix.support 'support/'",
+    "git:flow:config:fetch": "git config gitflow.feature.start.fetch true",
+    "git:flow:config:hotfix-notag": "git config gitflow.hotfix.finish.notag true",
     "hook:pre-commit": "$npm_execpath run lint -- --since develop --parallel",
     "hook:pre-push": "$npm_execpath run test -- --since develop --parallel",
     "lerna:clean": "lerna run clean 2>/dev/null || :",
     "lint": "cross-env CI=true lerna run lint",
+    "postinstall": "$npm_execpath run git:flow",
     "purge": "$npm_execpath run lerna:clean && $npm_execpath run clean && rm -rf node_modules",
     "release": "npx standard-version",
     "reset": "$npm_execpath run purge && $npm_execpath install",
