@@ -186,3 +186,9 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/vim,node,linux,macos,windows,visualstudiocode
+
+### Custom
+
+# Yarn
+.yarnrc
+.yarn-offline-cache
